@@ -1,15 +1,30 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns="http://www.w3.org/1999/xhtml"-->
+<!--      xmlns:h="http://xmlns.jcp.org/jsf/html"-->
+<!--      xmlns:p="http://primefaces.org/ui">-->
+<!--<h:head>-->
+<!--    <title>Página de Inicio</title>-->
+<!--</h:head>-->
+<!--<h:body>-->
+<!--    <h1>Bienvenido a PrimeFaces</h1>-->
+
+<!--    <p:button value="Ir a Tabla" outcome="table.xhtml" icon="pi pi-table" />-->
+<!--    <p:button value="Ir al Formulario" outcome="form.xhtml" icon="pi pi-pencil" />-->
+<!--</h:body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui">
 <h:head>
-    <title>Página de Inicio</title>
+    <title>Gestión de Personas</title>
 </h:head>
 <h:body>
-    <h1>Bienvenido a PrimeFaces</h1>
-
-    <p:button value="Ir a Tabla" outcome="table.xhtml" icon="pi pi-table" />
-    <p:button value="Ir al Formulario" outcome="form.xhtml" icon="pi pi-pencil" />
+    <p:panel header="Sistema de Gestión de Personas">
+        <h:outputText value="Bienvenido. Selecciona una opción:" />
+        <br/><br/>
+        <p:button value="Ver / Gestionar Personas" outcome="personas.xhtml" icon="pi pi-users" />
+    </p:panel>
 </h:body>
 </html>
-

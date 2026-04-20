@@ -1,24 +1,31 @@
 package pe.com.hermes.config;
 
-import com.sun.faces.config.FacesInitializer;
-import org.springframework.boot.web.servlet.ServletContextInitializer;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.faces.webapp.FacesServlet;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
 
 @Configuration
-public class JSFConfig implements ServletContextInitializer {
+public class JSFConfig {
 
-    @Override
-    public void onStartup(ServletContext servletContext) throws ServletException {
-        FacesInitializer facesInitializer = new FacesInitializer();
-        facesInitializer.onStartup(null, servletContext);
+    @Bean
+    public ServletRegistrationBean<FacesServlet> facesServlet() {
+        FacesServlet servlet = new FacesServlet();
+        ServletRegistrationBean<FacesServlet> registration =
+                new ServletRegistrationBean<>(servlet, "*.xhtml");
+        registration.setLoadOnStartup(1);
+        registration.setAsyncSupported(true);
+        return registration;
+    }
 
-        ServletRegistration.Dynamic facesServlet = servletContext.addServlet("Faces Servlet", FacesServlet.class);
-        facesServlet.setLoadOnStartup(1);
-        facesServlet.addMapping("*.xhtml");
+    @Bean
+    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> tomcatCustomizer() {
+        return factory -> factory.addContextCustomizers(context -> {
+            context.addParameter("com.sun.faces.forceLoadConfiguration", "true");
+            context.addParameter("javax.faces.PROJECT_STAGE", "Development");
+        });
     }
 }

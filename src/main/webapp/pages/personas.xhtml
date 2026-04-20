@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Gestion de Personas</title>
+</h:head>
+<h:body>
+
+    <p:growl id="growl" life="4000" showDetail="true" autoUpdate="true"/>
+
+    <!-- ===== FORMULARIO PRINCIPAL ===== -->
+    <h:form id="mainForm">
+
+        <p:panel header="Listado de Personas">
+
+            <p:toolbar>
+                <p:toolbarGroup>
+                    <p:inputText id="filtro"
+                                 value="#{personaController.filtro}"
+                                 placeholder="Buscar por nombre o apellido..."
+                                 style="width:280px"/>
+
+                    <p:commandButton value="Buscar"
+                                     icon="pi pi-search"
+                                     action="#{personaController.buscar}"
+                                     process="mainForm"
+                                     update="mainForm:tablaPersonas growl"/>
+
+                    <p:commandButton value="Limpiar"
+                                     icon="pi pi-times"
+                                     action="#{personaController.limpiarFiltro}"
+                                     process="mainForm"
+                                     update="mainForm growl"/>
+                </p:toolbarGroup>
+
+                <p:toolbarGroup align="right">
+                    <p:commandButton value="Exportar Excel 📗"
+                                     icon="pi pi-file-excel"
+                                     action="#{personaController.exportarExcel}"
+                                     ajax="false"
+                                     styleClass="ui-button-secondary"
+                                     style="margin-right:5px"/>
+
+                    <p:commandButton value="Nueva Persona 👤"
+                                     icon="pi pi-plus"
+                                     action="#{personaController.prepararNueva}"
+                                     process="@this"
+                                     update="formDialog"
+                                     oncomplete="PF('dlgPersona').show()"
+                                     styleClass="ui-button-success"/>
+                </p:toolbarGroup>
+            </p:toolbar>
+
+            <p:dataTable id="tablaPersonas"
+                         value="#{personaController.personas}"
+                         var="persona"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="5,10,20"
+                         paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         sortMode="multiple"
+                         emptyMessage="No se encontraron personas."
+                         bordered="true"
+                         stripedRows="true">
+
+                <p:column headerText="ID" sortBy="#{persona.id}" style="width:60px">
+                    <h:outputText value="#{persona.id}"/>
+                </p:column>
+                <p:column headerText="Nombres" sortBy="#{persona.nombres}">
+                    <h:outputText value="#{persona.nombres}"/>
+                </p:column>
+                <p:column headerText="Apellidos" sortBy="#{persona.apellidos}">
+                    <h:outputText value="#{persona.apellidos}"/>
+                </p:column>
+                <p:column headerText="Edad" sortBy="#{persona.edad}" style="width:80px">
+                    <h:outputText value="#{persona.edad}"/>
+                </p:column>
+                <p:column headerText="Correo" sortBy="#{persona.correo}">
+                    <h:outputText value="#{persona.correo}"/>
+                </p:column>
+
+                <p:column headerText="Acciones" style="width:110px; text-align:center;">
+                    <p:commandButton value="📝"
+                                     title="Editar"
+                                     action="#{personaController.prepararEdicion(persona)}"
+                                     process="@this"
+                                     update="formDialog"
+                                     oncomplete="PF('dlgPersona').show()"
+                                     styleClass="ui-button-warning"
+                                     style="padding: 2px 5px;"/>
+
+                    <p:commandButton value="❌"
+                                     title="Eliminar"
+                                     action="#{personaController.prepararEdicion(persona)}"
+                                     process="@this"
+                                     update="formConfirmar"
+                                     oncomplete="PF('dlgConfirmar').show()"
+                                     styleClass="ui-button-danger"
+                                     style="margin-left:5px; padding: 2px 5px;"/>
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+
+        <p:button value="Volver al Inicio"
+                  outcome="home.xhtml"
+                  icon="pi pi-home"
+                  style="margin-top:10px"/>
+    </h:form>
+
+    <!-- ===== DIALOGO CREAR / EDITAR ===== -->
+    <p:dialog header="#{personaController.modoEdicion ? 'Editar Persona' : 'Nueva Persona'}"
+              widgetVar="dlgPersona"
+              modal="true"
+              resizable="false"
+              width="480"
+              closable="true"
+              closeOnEscape="true">
+
+        <h:form id="formDialog">
+            <p:messages id="dlgMsgs" showDetail="true" redisplay="false"/>
+
+            <p:panelGrid columns="2" style="width:100%" cellpadding="6">
+
+                <p:outputLabel for="nombres" value="Nombres *"/>
+                <p:inputText id="nombres"
+                             value="#{personaController.personaSeleccionada.nombres}"
+                             required="true"
+                             requiredMessage="El nombre es obligatorio"
+                             maxlength="100">
+                    <f:validateLength minimum="2" maximum="100"/>
+                </p:inputText>
+
+                <p:outputLabel for="apellidos" value="Apellidos *"/>
+                <p:inputText id="apellidos"
+                             value="#{personaController.personaSeleccionada.apellidos}"
+                             required="true"
+                             requiredMessage="El apellido es obligatorio"
+                             maxlength="100">
+                    <f:validateLength minimum="2" maximum="100"/>
+                </p:inputText>
+
+                <p:outputLabel for="edad" value="Edad *"/>
+                <p:inputNumber id="edad"
+                               value="#{personaController.personaSeleccionada.edad}"
+                               required="true"
+                               requiredMessage="La edad es obligatoria"
+                               minValue="1"
+                               maxValue="120"
+                               decimalPlaces="0"/>
+
+                <p:outputLabel for="correo" value="Correo *"/>
+                <p:inputText id="correo"
+                             value="#{personaController.personaSeleccionada.correo}"
+                             required="true"
+                             requiredMessage="El correo es obligatorio">
+                    <f:validateRegex pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$"
+                                     validatorMessage="Formato de correo invalido"/>
+                </p:inputText>
+
+            </p:panelGrid>
+
+            <div style="text-align:right; margin-top:10px">
+                <p:commandButton value="Guardar"
+                                 icon="pi pi-save"
+                                 action="#{personaController.guardar}"
+                                 process="formDialog"
+                                 update="formDialog mainForm:tablaPersonas growl"
+                                 oncomplete="if (!args.validationFailed) PF('dlgPersona').hide();"
+                                 styleClass="ui-button-success"/>
+                <p:commandButton value="Cancelar"
+                                 icon="pi pi-times"
+                                 onclick="PF('dlgPersona').hide(); return false;"
+                                 immediate="true"
+                                 styleClass="ui-button-secondary"
+                                 style="margin-left:5px"/>
+            </div>
+        </h:form>
+    </p:dialog>
+
+    <!-- ===== DIALOGO CONFIRMAR ELIMINAR ===== -->
+    <p:dialog header="Confirmar eliminacion"
+              widgetVar="dlgConfirmar"
+              modal="true"
+              resizable="false"
+              width="400"
+              closable="true">
+
+        <h:form id="formConfirmar">
+            <div style="padding:10px; font-size:14px">
+                <h:outputText
+                        value="¿Esta seguro de eliminar a #{personaController.personaSeleccionada != null and personaController.personaSeleccionada.nombres != null ? personaController.personaSeleccionada.nombres.concat(' ').concat(personaController.personaSeleccionada.apellidos) : 'esta persona'}?"/>
+            </div>
+            <div style="text-align:right; margin-top:10px">
+                <p:commandButton value="Si, eliminar"
+                                 icon="pi pi-check"
+                                 action="#{personaController.eliminarSeleccionada}"
+                                 process="@this"
+                                 update="mainForm:tablaPersonas growl"
+                                 oncomplete="PF('dlgConfirmar').hide();"
+                                 styleClass="ui-button-danger"/>
+                <p:commandButton value="Cancelar"
+                                 icon="pi pi-times"
+                                 onclick="PF('dlgConfirmar').hide(); return false;"
+                                 immediate="true"
+                                 styleClass="ui-button-secondary"
+                                 style="margin-left:5px"/>
+            </div>
+        </h:form>
+    </p:dialog>
+
+</h:body>
+</html>
