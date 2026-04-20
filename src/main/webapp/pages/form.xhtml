@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Formulario</title>
+</h:head>
+<h:body>
+    <h:form>
+        <p:messages autoUpdate="true"/>
+
+        <p:panel header="Registro de Usuario">
+            <p:inputText value="#{formController.nombre}" placeholder="Nombre completo" required="true" />
+            <br/>
+            <p:inputText value="#{formController.email}" placeholder="Correo electrónico" required="true" />
+            <br/><br/>
+            <p:commandButton value="Guardar" action="#{formController.guardar}" update="@form" icon="pi pi-save"/>
+        </p:panel>
+
+        <p:button value="Volver" outcome="home.xhtml" icon="pi pi-arrow-left" />
+    </h:form>
+</h:body>
+</html>
