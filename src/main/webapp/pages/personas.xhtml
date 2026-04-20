@@ -81,7 +81,7 @@
                     <h:outputText value="#{persona.correo}"/>
                 </p:column>
 
-                <p:column headerText="Acciones" style="width:110px; text-align:center;">
+                <p:column headerText="Acciones" style="width:110px; text-align:center; white-space: nowrap;">
                     <p:commandButton value="📝"
                                      title="Editar"
                                      action="#{personaController.prepararEdicion(persona)}"
@@ -89,7 +89,14 @@
                                      update="formDialog"
                                      oncomplete="PF('dlgPersona').show()"
                                      styleClass="ui-button-warning"
-                                     style="padding: 2px 5px;"/>
+                                     style="width: 28px !important;
+                            height: 28px !important;
+                            font-size: 12px !important;
+                            padding: 0 !important;
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            vertical-align: middle;"/>
 
                     <p:commandButton value="❌"
                                      title="Eliminar"
@@ -98,7 +105,15 @@
                                      update="formConfirmar"
                                      oncomplete="PF('dlgConfirmar').show()"
                                      styleClass="ui-button-danger"
-                                     style="margin-left:5px; padding: 2px 5px;"/>
+                                     style="width: 28px !important;
+                            height: 28px !important;
+                            font-size: 10px !important;
+                            padding: 0 !important;
+                            margin-left: 5px;
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            vertical-align: middle;"/>
                 </p:column>
             </p:dataTable>
         </p:panel>
